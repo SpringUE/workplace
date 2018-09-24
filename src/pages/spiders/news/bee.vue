@@ -272,6 +272,10 @@ export default {
       console.log(data)
       let done = (res) => {
         this.flag.dialogVisible = false
+        // 如果有定时任务
+        if (data.task == 1 || data.task == true) {
+          this.goTask(data)
+        }
       }
       model == 'edit' ? this.editBee(data, done) : this.createBee(data, done)
     },
@@ -414,6 +418,10 @@ export default {
     tableRowClassName({row, rowIndex}) {
       if (row.isActive) return 'active-row';
       return '';
+    },
+    goTask(data) {
+      // 开启定时任务
+      this.socket.emit('bee.goTask', data)
     },
     // 停止
     stop(id) {

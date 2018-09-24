@@ -1,6 +1,7 @@
 const bee = require('../../router/bee')
 const config = require('../config.js')
 const puppeteer = require('puppeteer')
+const schedule = require('node-schedule')
 const {
   timeout
 } = require('../eva/tools/tools.js')
@@ -17,15 +18,21 @@ class Bee {
       data: []
     }
     this.isWorking = false
+    this.time = query.taskValue
+    this.task = null
+    this.tasking = false
   }
 
   // 开始方法
   async go () {
-    let vaild = await this.filter()
+    let vaild
+    if (!this.tasking) {
+      vaild = await this.filter()
+    }
     let headless = this.query.headless
     let baseCogs = config.launch
 
-    if (!vaild) {
+    if (!this.tasking && !vaild) {
       this.log('读取配置出错，已停止运行！')
       return false
     }
@@ -42,14 +49,35 @@ class Bee {
 
       try {
         await this.gather()
-        await this.update()
+        // await this.update()
       } catch (error) {
         this.log(`已关闭浏览器，页面操作出错：${error}`)
       }
 
+      // 更新数据量、抓取次数、最近时间
+      let data = await bee.schema.update(this.query)
+      this.update('info', data)
       await this.stop()
       this.log(`------------endTime: ${new Date().toLocaleString()}------------`)
     })
+  }
+
+  // 定时任务
+  async goTask () {
+    if (this.time) {
+      this.task = schedule.scheduleJob(this.time, () => {
+        this.go()
+        this.tasking = true
+      })
+    }
+  }
+
+  // 取消定时任务
+  async stopTask () {
+    if (this.task && this.tasking) {
+      this.task.cancel()
+      this.tasking = false
+    }
   }
 
   // 检测并过滤配置 返回布尔值
@@ -327,10 +355,7 @@ class Bee {
     await this.browser && this.browser.close()
     this.isWorking = false
     this.socket.broadcast('bee.stop', this.query.id)
-    this.log(`Successfully, 已停止采集！已关闭浏览器.`)
-    // 更新数据量、抓取次数、最近时间
-    let data = await bee.schema.update(this.query)
-    this.update('info', data)
+    this.log(`已停止采集！已关闭浏览器.`)
   }
 
   // 更新信息

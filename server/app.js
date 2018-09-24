@@ -58,7 +58,7 @@ socketInit(socket)
 
 // 运行服务，监听端口
 app.listen(config.port)
-console.info('listen on', config.port)
+console.info('Service started successfully! listen on', config.port)
 // http.createServer(app.callback()).listen(config.port, function () {
 //   console.info('listen on', config.port)
 // })

@@ -225,20 +225,14 @@ bee.schema.save = async (table) => {
     columns,
     data
   } = table
-  // 是否存在，否则创建表
-  // await db.knex.schema.hasTable(name).then(exists => {
-  //   if (!exists) {
-  //     return bee.schema.createTable(name, columns)
-  //   }
-  // })
-
-  columns.push({
+  let hasCreatedDate = columns.filter(c => c.name === 'createdDate').length ? true : false
+  !hasCreatedDate && columns.push({
     name: 'createdDate',
     type: 'string',
     length: 35
   })
 
-  console.log(data)
+  // console.log(data)
   
   await bee.schema.createTableIfNotExists(name, columns)
   await bee.schema.createColumnsIfNotExists(name, columns)
@@ -304,9 +298,9 @@ bee.schema.filterData = async (data, columns) => {
 
 // bee实例-更新数据
 bee.schema.update = async (data) => {
+  data.collectTimes += 1
   let {id, collectTimes, dbTableName, pageTotal, LastModifiedDate} = data
 
-  collectTimes += 1
   LastModifiedDate = +new Date()
   // 查询总记录数
   let total = await db.knex.select().from(dbTableName)

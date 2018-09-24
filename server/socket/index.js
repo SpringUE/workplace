@@ -1,4 +1,4 @@
-let {go, stop} = require('./bee')
+let {go, stop, goTask} = require('./bee')
 
 let socketInit = (socket) => {
   // 开始采集
@@ -9,6 +9,11 @@ let socketInit = (socket) => {
   // 停止采集
   socket.on('bee.stop', (ctx, data) => {
     stop(socket, ctx, data)
+  })
+
+  // 定时采集
+  socket.on('bee.goTask', (ctx, data) => {
+    goTask(socket, ctx, data)
   })
 }
 

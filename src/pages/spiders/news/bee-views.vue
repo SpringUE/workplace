@@ -136,6 +136,11 @@ export default {
         return curr
       }, result)
 
+      result.push({
+        prop: 'createdDate',
+        label: '日期'
+      })
+
       return result
     },
     onSearch() {

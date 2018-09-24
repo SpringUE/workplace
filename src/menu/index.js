@@ -38,7 +38,8 @@ export const menuHeader = [
     children: (pre => [
       { path: `${pre}/excel-to-4px`, title: '库存统计' },
       { path: `${pre}/excel-to-4px`, title: '销售分析' },
-      { path: `${pre}/excel-to-4px`, title: '订单转换4px' }
+      { path: `${pre}/excel-to-4px`, title: '订单转换4px' },
+      { path: `${pre}/mailer`, title: '邮件大师' }
     ])('/amazon')
   },
   // Spider
