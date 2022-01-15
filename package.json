@@ -44,7 +44,7 @@
     "koa2-connect": "^1.0.2",
     "lodash": "^4.17.10",
     "lowdb": "^1.0.0",
-    "marked": "^0.3.9",
+    "marked": "^4.0.10",
     "mime-types": "^2.1.15",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.18.1",
